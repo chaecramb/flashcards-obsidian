@@ -44,22 +44,22 @@ export class Parser {
       headings = [...file.matchAll(this.regex.headingsRegex)];
     }
 
-    note = this.substituteObsidianLinks(`[[${note}]]`, vault);
+    let link = this.substituteObsidianLinks(`[[${note}]]`, vault);
     cards = cards.concat(
-      this.generateCardsWithTag(file, headings, deck, vault, note, globalTags)
+      this.generateCardsWithTag(file, headings, deck, vault, note, link, globalTags)
     );
     cards = cards.concat(
-      this.generateInlineCards(file, headings, deck, vault, note, globalTags)
+      this.generateInlineCards(file, headings, deck, vault, note, link, globalTags)
     );
     cards = cards.concat(
-      this.generateSpacedCards(file, headings, deck, vault, note, globalTags)
+      this.generateSpacedCards(file, headings, deck, vault, note, link, globalTags)
     );
     cards = cards.concat(
-      this.generateClozeCards(file, headings, deck, vault, note, globalTags)
+      this.generateClozeCards(file, headings, deck, vault, note, link, globalTags)
     );
 
     cards = cards.concat(
-      this.generateListCards(file, headings, deck, vault, note, globalTags)
+      this.generateListCards(file, headings, deck, vault, note, link, globalTags)
     );
 
     // Filter out cards that are fully inside a code block, a math block or a math inline block
@@ -144,6 +144,7 @@ export class Parser {
     deck: string,
     vault: string,
     note: string,
+    link: string,
     globalTags: string[] = []
   ) {
     const contextAware = this.settings.contextAwareMode;
@@ -179,7 +180,7 @@ export class Parser {
       const inserted: boolean = match[5] ? true : false;
       const fields: any = { Prompt: prompt };
       if (this.settings.sourceSupport) {
-        fields["Source"] = note;
+        fields["Source"] = link;
       }
       const containsCode = this.containsCode([prompt]);
 
@@ -208,6 +209,7 @@ export class Parser {
     deck: string,
     vault: string,
     note: string,
+    link: string,
     globalTags: string[] = []
   ) {
     const contextAware = this.settings.contextAwareMode;
@@ -275,7 +277,7 @@ export class Parser {
       const inserted: boolean = match[5] ? true : false;
       const fields: any = { Text: clozeText, Extra: "" };
       if (this.settings.sourceSupport) {
-        fields["Source"] = note;
+        fields["Source"] = link;
       }
       const containsCode = this.containsCode([clozeText]);
 
@@ -304,6 +306,7 @@ export class Parser {
     deck: string,
     vault: string,
     note: string,
+    link: string,
     globalTags: string[] = []
   ) {
     const contextAware = this.settings.contextAwareMode;
@@ -349,7 +352,7 @@ export class Parser {
       const inserted: boolean = match[6] ? true : false;
       const fields: any = { Front: question, Back: answer };
       if (this.settings.sourceSupport) {
-        fields["Source"] = note;
+        fields["Source"] = link;
       }
       const containsCode = this.containsCode([question, answer]);
 
@@ -378,6 +381,7 @@ export class Parser {
     deck: string,
     vault: string,
     note: string,
+    link: string,
     globalTags: string[] = []
   ) {
     const contextAware = this.settings.contextAwareMode;
@@ -421,7 +425,7 @@ export class Parser {
       const inserted: boolean = match[6] ? true : false;
       const fields: any = { Front: question, Back: answer };
       if (this.settings.sourceSupport) {
-        fields["Source"] = note;
+        fields["Source"] = link;
       }
       const containsCode = this.containsCode([question, answer]);
 
@@ -450,6 +454,7 @@ export class Parser {
     deck: string,
     vault: string,
     note: string,
+    link: string,
     globalTags: string[] = []
   ) {
     const contextAware = this.settings.contextAwareMode;
@@ -483,14 +488,15 @@ export class Parser {
       title = this.parseLine(title, vault);
       original = this.parseLine(original, vault);
 
+
       const initialOffset = match.index
       const endingLine = match.index + match[0].length;
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Title: title, Original: original, Text1: '{{c1::a}}' };
+      const fields: any = { Title: title, Original: original, Text1: '{{c1::a}}', Context: note };
       if (this.settings.sourceSupport) {
-        fields["Sources"] = note;
+        fields["Sources"] = link;
       }
       const containsCode = this.containsCode([title, original]);
 
