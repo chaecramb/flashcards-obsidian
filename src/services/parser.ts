@@ -423,9 +423,9 @@ export class Parser {
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Front: question, Back: answer };
+      const fields: any = { Front: question, Back: answer, Context: note };
       if (this.settings.sourceSupport) {
-        fields["Source"] = link;
+        fields["Link"] = link;
       }
       const containsCode = this.containsCode([question, answer]);
 
