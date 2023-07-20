@@ -187,7 +187,10 @@ export class Anki {
   private invoke(action: string, version = 6, params = {}): any {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.addEventListener("error", () => reject("failed to issue request"));
+      xhr.addEventListener("error", (e) => 
+      {
+        reject("failed to issue request")
+      });
       xhr.addEventListener("load", () => {
         try {
           const response = JSON.parse(xhr.responseText);

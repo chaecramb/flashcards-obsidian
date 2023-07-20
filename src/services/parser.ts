@@ -5,6 +5,7 @@ import { Flashcard } from "../entities/flashcard";
 import { Inlinecard } from "src/entities/inlinecard";
 import { Spacedcard } from "src/entities/spacedcard";
 import { Clozecard } from "src/entities/clozecard";
+import { Listcard } from "src/entities/listcard";
 import { escapeMarkdown } from "src/utils";
 import { Card } from "src/entities/card";
 import { htmlToMarkdown } from 'obsidian';
@@ -55,6 +56,10 @@ export class Parser {
     );
     cards = cards.concat(
       this.generateClozeCards(file, headings, deck, vault, note, globalTags)
+    );
+
+    cards = cards.concat(
+      this.generateListCards(file, headings, deck, vault, note, globalTags)
     );
 
     // Filter out cards that are fully inside a code block, a math block or a math inline block
@@ -421,6 +426,75 @@ export class Parser {
       const containsCode = this.containsCode([question, answer]);
 
       const card = new Flashcard(
+        id,
+        deck,
+        originalQuestion,
+        fields,
+        reversed,
+        initialOffset,
+        endingLine,
+        tags,
+        inserted,
+        medias,
+        containsCode
+      );
+      cards.push(card);
+    }
+
+    return cards;
+  }
+
+  private generateListCards(
+    file: string,
+    headings: any,
+    deck: string,
+    vault: string,
+    note: string,
+    globalTags: string[] = []
+  ) {
+    const contextAware = this.settings.contextAwareMode;
+    const cards: Spacedcard[] = [];
+    const matches = [...file.matchAll(this.regex.cardsListStyle)];
+
+    const embedMap = this.getEmbedMap();
+
+    for (const match of matches) {
+      const reversed: boolean = false;
+      const headingLevel = match[1].trim().length !== 0 ? match[1].length : -1;
+      // Match.index - 1 because otherwise in the context there will be even match[1], i.e. the question itself
+      const context = contextAware
+        ? this.getContext(headings, match.index - 1, headingLevel).concat([])
+        : "";
+
+      const originalQuestion = match[2].trim();
+      let title = contextAware
+        ? [...context, match[2].trim()].join(
+          `${this.settings.contextSeparator}`
+        )
+        : match[2].trim();
+        
+      let original = match[5].trim().replace(/- /g, "");
+      let medias: string[] = this.getImageLinks(title);
+      medias = medias.concat(this.getImageLinks(original));
+      medias = medias.concat(this.getAudioLinks(original));
+
+      original = this.getEmbedWrapContent(embedMap, original);
+
+      title = this.parseLine(title, vault);
+      original = this.parseLine(original, vault);
+
+      const initialOffset = match.index
+      const endingLine = match.index + match[0].length;
+      const tags: string[] = this.parseTags(match[4], globalTags);
+      const id: number = match[6] ? Number(match[6]) : -1;
+      const inserted: boolean = match[6] ? true : false;
+      const fields: any = { Title: title, Original: original, Text1: '{{c1::a}}' };
+      if (this.settings.sourceSupport) {
+        fields["Sources"] = note;
+      }
+      const containsCode = this.containsCode([title, original]);
+
+      const card = new Listcard(
         id,
         deck,
         originalQuestion,

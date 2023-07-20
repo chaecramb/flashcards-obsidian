@@ -17,6 +17,7 @@ export class Regex {
   flashscardsWithTag: RegExp;
   cardsInlineStyle: RegExp;
   cardsSpacedStyle: RegExp;
+  cardsListStyle: RegExp;
   cardsClozeWholeLine: RegExp;
   singleClozeCurly: RegExp;
   singleClozeHighlight: RegExp;
@@ -86,6 +87,12 @@ export class Regex {
       settings.flashcardsTag +
       "[/-]spaced)((?: *#[\\p{Letter}-]+)*) *\\n?(?:\\^(\\d{13}))?";
     this.cardsSpacedStyle = new RegExp(str, flags);
+
+    str =
+      "( {0,3}[#]*)((?:[^\\n]\\n?)+?)(#" +
+      settings.flashcardsTag +
+      "(?:[/-]list)?)((?: *#[\\p{Number}\\p{Letter}\\-\\/_]+)*) *?\\n+((?:[^\\n]\\n?)*?(?=\\^\\d{13}|$))(?:\\^(\\d{13}))?";
+    this.cardsListStyle = new RegExp(str, flags);
 
     // https://regex101.com/r/cgtnLf/1
 
