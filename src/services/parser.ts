@@ -484,11 +484,11 @@ export class Parser {
       clozeArray = clozeArray.map((line, i, clozeArray) => {
         return clozeArray.reduce((s, cur, j, clozeArray) => {
           if(i === j){
-            s += `{{c${i+1}::${cur}}}\n`
+            s += `{{c${i+1}::${cur}}}<br>`
           } else if(i-1 === j) {
-            s += `${clozeArray[i]}\n`
+            s += `${clozeArray[i]}<br>`
           } else {
-            s+= `...\n`
+            s+= `...<br>`
           }
           return s
         }, '')
