@@ -425,7 +425,7 @@ export class Parser {
       const inserted: boolean = match[6] ? true : false;
       const fields: any = { Front: question, Back: answer, Context: note };
       if (this.settings.sourceSupport) {
-        fields["Link"] = link;
+        fields["Source"] = link;
       }
       const containsCode = this.containsCode([question, answer]);
 
