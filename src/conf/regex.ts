@@ -91,7 +91,7 @@ export class Regex {
     str =
       "( {0,3}[#]*)((?:[^\\n]\\n?)+?)(#" +
       settings.flashcardsTag +
-      "(?:[/-]list)?)((?: *#[\\p{Number}\\p{Letter}\\-\\/_]+)*) *?\\n+((?:[^\\n]\\n?)*?(?=\\^\\d{13}|$))(?:\\^(\\d{13}))?";
+      "(?:[/-]list))((?: *#[\\p{Number}\\p{Letter}\\-\\/_]+)*) *?\\n+((?:[^\\n]\\n?)*?(?=\\^\\d{13}|$))(?:\\^(\\d{13}))?";
     this.cardsListStyle = new RegExp(str, flags);
 
     // https://regex101.com/r/cgtnLf/1
