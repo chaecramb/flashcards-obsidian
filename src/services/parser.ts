@@ -479,6 +479,22 @@ export class Parser {
         : match[2].trim();
         
       let original = match[5].trim().replace(/- /g, "");
+      
+      let clozeArray = original.split(/\r?\n/);
+      clozeArray = clozeArray.map((line, i, clozeArray) => {
+        return clozeArray.reduce((s, cur, j, clozeArray) => {
+          if(i === j){
+            s += `{{c${i+1}:${cur}}}\n`
+          } else if(i-1 === j) {
+            s += `${clozeArray[i]}\n`
+          } else {
+            s+= `...\n`
+          }
+          return s
+        }, '')
+      })
+
+
       let medias: string[] = this.getImageLinks(title);
       medias = medias.concat(this.getImageLinks(original));
       medias = medias.concat(this.getAudioLinks(original));
@@ -488,13 +504,35 @@ export class Parser {
       title = this.parseLine(title, vault);
       original = this.parseLine(original, vault);
 
-
       const initialOffset = match.index
       const endingLine = match.index + match[0].length;
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Title: title, Original: original, Text1: '{{c1::a}}', Context: note };
+      const fields: any = { 
+        Title: title,
+        Original: original,
+        Text1: clozeArray[0],
+        Text2: clozeArray[1],
+        Text3: clozeArray[2],
+        Text4: clozeArray[3],
+        Text5: clozeArray[4],
+        Text6: clozeArray[5],
+        Text7: clozeArray[6],
+        Text8: clozeArray[7],
+        Text9: clozeArray[8],
+        Text10: clozeArray[9],
+        Text11: clozeArray[10],
+        Text12: clozeArray[11],
+        Text13: clozeArray[12],
+        Text14: clozeArray[13],
+        Text15: clozeArray[14],
+        Text16: clozeArray[15],
+        Text17: clozeArray[16],
+        Text18: clozeArray[17],
+        Text19: clozeArray[18],
+        Text20: clozeArray[19],
+        Context: note };
       if (this.settings.sourceSupport) {
         fields["Sources"] = link;
       }
