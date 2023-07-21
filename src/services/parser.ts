@@ -410,6 +410,7 @@ export class Parser {
         : match[2].trim();
       let answer = match[5].trim();
       let medias: string[] = this.getImageLinks(question);
+      medias = medias.concat(this.getAudioLinks(question));
       medias = medias.concat(this.getImageLinks(answer));
       medias = medias.concat(this.getAudioLinks(answer));
 
