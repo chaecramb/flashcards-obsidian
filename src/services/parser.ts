@@ -398,16 +398,18 @@ export class Parser {
         `#${this.settings.flashcardsTag}/reverse`;
       const headingLevel = match[1].trim().length !== 0 ? match[1].length : -1;
       // Match.index - 1 because otherwise in the context there will be even match[1], i.e. the question itself
-      const context = contextAware
+      let context = contextAware
         ? this.getContext(headings, match.index - 1, headingLevel).concat([])
         : "";
 
       const originalQuestion = match[2].trim();
-      let question = contextAware
-        ? [...context, match[2].trim()].join(
-          `${this.settings.contextSeparator}`
-        )
-        : match[2].trim();
+      // let question = contextAware
+      //   ? [...context, match[2].trim()].join(
+      //     `${this.settings.contextSeparator}`
+      //   )
+      //   : match[2].trim();
+      
+      let question = match[2].trim();
       let answer = match[5].trim();
       let medias: string[] = this.getImageLinks(question);
       medias = medias.concat(this.getAudioLinks(question));
@@ -418,13 +420,14 @@ export class Parser {
 
       question = this.parseLine(question, vault);
       answer = this.parseLine(answer, vault);
+      context = [note, ...context].join(`${this.settings.contextSeparator}`)
 
       const initialOffset = match.index
       const endingLine = match.index + match[0].length;
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Front: question, Back: answer, Context: note };
+      const fields: any = { Front: question, Back: answer, Context: context };
       if (this.settings.sourceSupport) {
         fields["Source"] = link;
       }
