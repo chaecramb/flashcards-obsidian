@@ -252,7 +252,7 @@ export class Parser {
       });
 
       // Replace the highlight clozes in the line with Anki syntax
-      // clozeText = clozeText.replace(this.regex.singleClozeHighlight, "{{c1::$2}}");
+      clozeText = clozeText.replace(this.regex.singleClozeHighlight, "{{c1::$2}}");
 
       if (clozeText === match[2]) {
         // If the clozeText is the same as the match it means that the curly clozes were all in math blocks
@@ -663,7 +663,7 @@ export class Parser {
 
     if (str) {
       for (const tag of str.split("#")) {
-        let newTag = tag.trim();
+        let newTag = tag.trim().split('/')[1];
         if (newTag) {
           // Replace obsidian hierarchy tags delimeter \ with anki delimeter ::
           newTag = newTag.replace(this.regex.tagHierarchy, "::");
