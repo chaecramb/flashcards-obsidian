@@ -187,9 +187,8 @@ export class Anki {
   private invoke(action: string, version = 6, params = {}): any {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.addEventListener("error", (e) => 
-      {
-        reject("failed to issue request")
+      xhr.addEventListener("error", (e) => {
+        reject("failed to issue request");
       });
       xhr.addEventListener("load", () => {
         try {
@@ -235,8 +234,7 @@ export class Anki {
       codeExtension = codeDeckExtension;
     }
 
-    const css = 
-      `.card {
+    const css = `.card {
         font-family: arial;
         font-size: 20px;
         text-align: left;
@@ -270,15 +268,13 @@ export class Anki {
       #extended-context {
         padding-inline-start: 17px;
         border-left: 2px solid hsl(254, 80%, 70.5%);
-      }`
-    
-    const front = 
-      `<div id="context">{{Context}}</div>
-      <br>
-      <div>{{Front}}</div>`
+      }`;
 
-    const back =
-      `{{FrontSide}}
+    const front = `<div id="context">{{Context}}</div>
+      <br>
+      <div>{{Front}}</div>${codeScriptContent}`;
+
+    const back = `{{FrontSide}}
 
       <hr id=answer>
       <br>
@@ -296,8 +292,8 @@ export class Anki {
       <div id="extended-context">
       {{Extended Context}}
       </div>
-      {{/Extended Context}}`
-  
+      {{/Extended Context}}`;
+
     // const css =
     // ?  '.card {\r\n font-family: arial;\r\n font-size: 20px;\r\n text-align: center;\r\n color: black;\r\n background-color: white;\r\n}\r\n\r\n.tag::before {\r\n\tcontent: "#";\r\n}\r\n\r\n.tag {\r\n  color: white;\r\n  background-color: #9F2BFF;\r\n  border: none;\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 1px 8px;\r\n  margin: 0px 3px;\r\n  text-align: center;\r\n  text-decoration: none;\r\n  cursor: pointer;\r\n  border-radius: 14px;\r\n  display: inline;\r\n  vertical-align: middle;\r\n}\r\n .cloze { font-weight: bold; color: blue;}.nightMode .cloze { color: lightblue;}';
     // const front = `{{Front}}\r\n<p class=\"tags\">{{Tags}}<\/p>\r\n\r\n<script>\r\n    var tagEl = document.querySelector(\'.tags\');\r\n    var tags = tagEl.innerHTML.split(\' \');\r\n    var html = \'\';\r\n    tags.forEach(function(tag) {\r\n\tif (tag) {\r\n\t    var newTag = \'<span class=\"tag\">\' + tag + \'<\/span>\';\r\n           html += newTag;\r\n    \t    tagEl.innerHTML = html;\r\n\t}\r\n    });\r\n    \r\n<\/script>${codeScriptContent}`;
@@ -309,7 +305,13 @@ export class Anki {
     const clozeFront = `{{cloze:Text}}\n\n<script>\r\n    var tagEl = document.querySelector(\'.tags\');\r\n    var tags = tagEl.innerHTML.split(\' \');\r\n    var html = \'\';\r\n    tags.forEach(function(tag) {\r\n\tif (tag) {\r\n\t    var newTag = \'<span class=\"tag\">\' + tag + \'<\/span>\';\r\n           html += newTag;\r\n    \t    tagEl.innerHTML = html;\r\n\t}\r\n    });\r\n    \r\n<\/script>${codeScriptContent}`;
     const clozeBack = `{{cloze:Text}}\n\n<br>{{Extra}}${sourceFieldContent}<script>\r\n    var tagEl = document.querySelector(\'.tags\');\r\n    var tags = tagEl.innerHTML.split(\' \');\r\n    var html = \'\';\r\n    tags.forEach(function(tag) {\r\n\tif (tag) {\r\n\t    var newTag = \'<span class=\"tag\">\' + tag + \'<\/span>\';\r\n           html += newTag;\r\n    \t    tagEl.innerHTML = html;\r\n\t}\r\n    });\r\n    \r\n<\/script>${codeScriptContent}`;
 
-    let classicFields = ["Front", "Back", "Context", "Remarks", "Extended Context"];
+    let classicFields = [
+      "Front",
+      "Back",
+      "Context",
+      "Remarks",
+      "Extended Context",
+    ];
     let promptFields = ["Prompt"];
     let clozeFields = ["Text", "Extra"];
     if (sourceSupport) {
@@ -370,8 +372,7 @@ export class Anki {
           },
         ],
       },
-      
-    }
+    };
 
     const obsidianSpaced = {
       action: "createModel",
@@ -389,7 +390,12 @@ export class Anki {
       },
     };
 
-    return [obsidianBasic, obsidianBasicReversed, obsidianCloze, obsidianSpaced];
+    return [
+      obsidianBasic,
+      obsidianBasicReversed,
+      obsidianCloze,
+      obsidianSpaced,
+    ];
   }
 
   public async requestPermission() {
